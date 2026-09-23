@@ -37,10 +37,14 @@ curl -X POST http://127.0.0.1:8000/videos \
   -d '{"concept":"How does the pH scale work?"}'
 
 curl http://127.0.0.1:8000/videos
-curl http://127.0.0.1:8000/videos/<job-id>
+JOB_ID="replace-with-id-from-POST"
+curl "http://127.0.0.1:8000/videos/$JOB_ID"
+curl -L "http://127.0.0.1:8000/videos/$JOB_ID/file" -o explanation.mp4
 ```
 
 `POST /videos` responds `202` with a `queued` job. Poll the detail endpoint until `succeeded` or `failed`. A successful job has `video_url: /videos/<job-id>/file`, which streams an MP4. `GET /health` reports API health. The list is global and has no user accounts, so run this POC on localhost.
+
+To watch immediately without running the backend, open one of the three committed MP4s linked in [the demo walkthrough](DEMO.md). That page also explains how to save a newly generated MP4 from Postman. A `127.0.0.1` API link works only on the machine running this service.
 
 Job records persist in `data/jobs.sqlite3`, completed videos in `data/videos/`, and temporary render files under `work/`. Workers use atomic claims, renewable leases, and token-specific artifact paths so an interrupted attempt can be reclaimed. All model/media failures leave the job in `failed` without a served partial file.
 
