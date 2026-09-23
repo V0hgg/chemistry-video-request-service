@@ -1,0 +1,10 @@
+.env
+.venv/
+data/
+work/
+outputs/
+.agent/
+.DS_Store
+__pycache__/
+.pytest_cache/
+*.egg-info/
